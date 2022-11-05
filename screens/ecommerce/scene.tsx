@@ -326,13 +326,12 @@ export function Ecommerce() {
           {cartItems.slice(0, 2).map(item => {
             return (
               <Image
-                w={20}
-                h={20}
                 borderWidth={4}
                 borderRadius="full"
                 borderColor="white"
                 key={item.value.idMeal}
                 alt={item.value.strMeal}
+                style={{width: 50, height: 50}}
                 source={{uri: item.value.strMealThumb}}
               />
             );
