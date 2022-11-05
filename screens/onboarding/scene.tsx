@@ -63,9 +63,11 @@ export function Onboarding() {
           }}
         />
 
-        {/* <HStack>
-          {slides}
-        </HStack> */}
+        <HStack space={2} justifyContent="center">
+          {slides.map((_, i) => {
+            return <View key={i} style={styles.dot} />;
+          })}
+        </HStack>
       </VStack>
 
       <HStack p={4} space={2}>
@@ -83,4 +85,10 @@ const styles = StyleSheet.create({
   },
   slide: {},
   image: {},
+  dot: {
+    width: 10,
+    height: 10,
+    borderRadius: 100,
+    backgroundColor: 'blue',
+  },
 });
