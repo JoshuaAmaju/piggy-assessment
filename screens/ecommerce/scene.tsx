@@ -7,6 +7,8 @@ import {
   HStack,
   IconButton,
   Image,
+  Input,
+  ScrollView,
   Spinner,
   Text,
   VStack,
@@ -17,6 +19,8 @@ import {cycle, RootState} from './cart';
 
 import Clock from './assets/clock.svg';
 import ShoppingBag from './assets/shopping.bag.svg';
+import MagnifyingGlass from './assets/magnifying.glass.svg';
+import AdjustmentsHorizontal from './assets/adjustments.horizontal.svg';
 
 // import {MaterialIcons} from '@expo/vector-icons';
 
@@ -167,75 +171,123 @@ export function Ecommerce() {
   }, [navigator]);
 
   return (
-    <VStack py="6" flex={1}>
-      <VStack flex={1}>
-        <VStack space={6}>
-          {categories.data ? (
-            <FlatList
-              horizontal
-              data={categories.data}
-              renderItem={renderCategory}
-              ItemSeparatorComponent={Spacer}
-              _contentContainerStyle={{px: '6'}}
-              keyExtractor={item => item.idCategory}
-              showsHorizontalScrollIndicator={false}
+    <VStack flex={1}>
+      <ScrollView
+        _contentContainerStyle={{py: '6'}}
+        showsVerticalScrollIndicator={false}>
+        <VStack flex={1} space={6}>
+          <Box px="6">
+            <Input
+              // p="4"
+              borderRadius={20}
+              borderColor="#E6E5E5"
+              placeholder="Search.."
+              _stack={{px: '4', py: '2'}}
+              InputLeftElement={
+                <Box>
+                  <MagnifyingGlass width={25} height={25} color="#000" />
+                </Box>
+              }
+              InputRightElement={
+                <Box>
+                  <AdjustmentsHorizontal width={25} height={25} color="#000" />
+
+                  <Center
+                    w={6}
+                    h={6}
+                    top={-8}
+                    right={-8}
+                    bg="#529F83"
+                    borderWidth={2}
+                    borderRadius="full"
+                    position="absolute"
+                    borderColor="white">
+                    <Text color="white" fontSize={12} textAlign="center">
+                      2
+                    </Text>
+                  </Center>
+                </Box>
+              }
             />
-          ) : (
-            <Center p={4}>
-              {categories.isLoading ? (
-                <Spinner />
-              ) : categories.isError ? (
-                <VStack space={2}>
-                  <Text>An error occurred</Text>
-                  <Button onPress={() => categories.refetch()}>Retry</Button>
-                </VStack>
-              ) : null}
-            </Center>
-          )}
+          </Box>
 
-          {meals.data ? (
-            <VStack space={4}>
-              <HStack
-                px="6"
-                space={2}
-                alignItems="center"
-                justifyContent="space-between">
-                <Text bold fontSize="2xl">
-                  Popular Items
-                </Text>
-
-                <Link to={{screen: ''}}>
-                  <Text color="gray.400">See All</Text>
-                </Link>
-              </HStack>
-
+          <VStack space={6}>
+            {categories.data ? (
               <FlatList
                 horizontal
-                data={meals.data}
-                renderItem={renderMeal}
+                data={categories.data}
+                renderItem={renderCategory}
+                ItemSeparatorComponent={Spacer}
                 _contentContainerStyle={{px: '6'}}
-                keyExtractor={item => item.idMeal}
-                ItemSeparatorComponent={() => <Box w={5} />}
+                keyExtractor={item => item.idCategory}
+                showsHorizontalScrollIndicator={false}
               />
-            </VStack>
-          ) : (
-            <Center p={4} flex={1}>
-              {meals.isLoading ? (
-                <Spinner size="lg" />
-              ) : meals.isError ? (
-                <VStack space={2}>
-                  <Text>An error occurred</Text>
-                  <Button onPress={() => meals.refetch()}>Retry</Button>
-                </VStack>
-              ) : null}
-            </Center>
-          )}
+            ) : (
+              <Center p={4}>
+                {categories.isLoading ? (
+                  <Spinner />
+                ) : categories.isError ? (
+                  <VStack space={2}>
+                    <Text fontSize="lg">An error occurred</Text>
+                    <Button
+                      px="4"
+                      size="sm"
+                      variant="outline"
+                      onPress={() => categories.refetch()}>
+                      Retry
+                    </Button>
+                  </VStack>
+                ) : null}
+              </Center>
+            )}
+
+            {meals.data ? (
+              <VStack space={4}>
+                <HStack
+                  px="6"
+                  space={2}
+                  alignItems="center"
+                  justifyContent="space-between">
+                  <Text bold fontSize="2xl">
+                    Popular Items
+                  </Text>
+
+                  <Link to={{screen: ''}}>
+                    <Text color="gray.400">See All</Text>
+                  </Link>
+                </HStack>
+
+                <FlatList
+                  horizontal
+                  data={meals.data}
+                  renderItem={renderMeal}
+                  _contentContainerStyle={{px: '6'}}
+                  keyExtractor={item => item.idMeal}
+                  ItemSeparatorComponent={() => <Box w={5} />}
+                />
+              </VStack>
+            ) : (
+              <Center p={4}>
+                {meals.isLoading ? (
+                  <Spinner size="lg" />
+                ) : meals.isError ? (
+                  <VStack space={2}>
+                    <Text fontSize="xl">An error occurred</Text>
+                    <Button px="4" size="sm" onPress={() => meals.refetch()}>
+                      Retry
+                    </Button>
+                  </VStack>
+                ) : null}
+              </Center>
+            )}
+          </VStack>
         </VStack>
-      </VStack>
+      </ScrollView>
 
       <HStack
-        mx="6"
         p={6}
+        mx="6"
+        mb="6"
         bg="#529F83"
         borderRadius={25}
         alignItems="center"
