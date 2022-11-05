@@ -1,12 +1,15 @@
-import React, {createRef, useState} from 'react';
+import React, {createRef, useCallback, useState} from 'react';
 import {Box, Button, FlatList, HStack, Image, Text, VStack} from 'native-base';
 import {
   StyleSheet,
   useWindowDimensions,
   View,
   FlatList as RNFlatList,
+  ListRenderItem,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+
+type Slide = {title: string};
 
 // const slides = [
 //   {
@@ -22,6 +25,27 @@ export function Onboarding() {
   const [index, setIndex] = useState(0);
   const {width} = useWindowDimensions();
 
+  const renderItem = useCallback<ListRenderItem<Slide>>(
+    ({item}) => {
+      return (
+        <VStack space={2} style={[styles.slide, {width}]}>
+          {/* <Image
+                  source={item.image}
+                  resizeMode="contain"
+                  style={styles.image}
+                /> */}
+
+          <Box p={6} maxW={80}>
+            <Text bold fontSize="xl">
+              {item.title}
+            </Text>
+          </Box>
+        </VStack>
+      );
+    },
+    [width],
+  );
+
   return (
     <View style={styles.scene}>
       <HStack p={4} justifyContent="center">
@@ -35,37 +59,26 @@ export function Onboarding() {
           ref={ref}
           horizontal
           data={slides}
-          style={{flex: 1}}
+          // style={{flex: 1}}
           pagingEnabled={true}
           keyExtractor={(_, i) => i.toString()}
           showsHorizontalScrollIndicator={false}
-          contentContainerStyle={{minHeight: '100%'}}
+          // contentContainerStyle={{minHeight: '100%'}}
+          renderItem={renderItem}
           onMomentumScrollEnd={({nativeEvent}) => {
             const {contentOffset} = nativeEvent;
             setIndex(contentOffset.x / width);
-          }}
-          renderItem={({item}) => {
-            return (
-              <VStack space={2} style={[styles.slide, {width}]}>
-                {/* <Image
-                  source={item.image}
-                  resizeMode="contain"
-                  style={styles.image}
-                /> */}
-
-                <Box p={6} maxW={80}>
-                  <Text bold fontSize="xl">
-                    {item.title}
-                  </Text>
-                </Box>
-              </VStack>
-            );
           }}
         />
 
         <HStack space={2} justifyContent="center">
           {slides.map((_, i) => {
-            return <View key={i} style={styles.dot} />;
+            return (
+              <View
+                key={i}
+                style={[styles.dot, index === i && styles.activeDot]}
+              />
+            );
           })}
         </HStack>
       </VStack>
@@ -90,5 +103,8 @@ const styles = StyleSheet.create({
     height: 10,
     borderRadius: 100,
     backgroundColor: 'blue',
+  },
+  activeDot: {
+    backgroundColor: 'red',
   },
 });
