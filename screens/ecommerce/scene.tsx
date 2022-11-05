@@ -102,7 +102,7 @@ export function Ecommerce() {
             });
           }}>
           <VStack space={6} justifyContent="space-between">
-            <VStack space={2} alignItems="center">
+            <VStack py={2} space={1} alignItems="center">
               <Text
                 fontSize="md"
                 maxWidth={200}
@@ -127,19 +127,21 @@ export function Ecommerce() {
               space={2}
               alignItems="center"
               justifyContent="space-between">
-              <VStack>
-                <Text>🔥 44 calories</Text>
-                <Text>20 mins</Text>
+              <VStack space={1}>
+                <Text fontWeight="semibold">🔥 44 calories</Text>
+
+                <HStack space={2} alignItems="center">
+                  <Clock width={20} height={20} color="#7E7E7F" />
+                  <Text color="#7E7E7F">20 mins</Text>
+                </HStack>
               </VStack>
 
               <IconButton
                 bg="white"
-                borderRadius="full"
+                borderRadius="xl"
                 onPress={() => dispatch(cycle(item))}
                 icon={<ShoppingBag width={20} height={20} color="#000" />}
               />
-
-              {/* <Button onPress={() => dispatch(cycle(item))}>Add</Button> */}
             </HStack>
           </VStack>
         </TouchableOpacity>
@@ -155,14 +157,12 @@ export function Ecommerce() {
           <Text bold fontSize="lg" color="gray.400">
             Hi Joshua
           </Text>
-          <Text bold fontSize="2xl">
+          <Text fontWeight="extraBlack" fontSize="2xl">
             Hungry Now? 🔥
           </Text>
         </VStack>
       ),
-      headerRight: () => (
-        <Box w={10} h={10} bg="gray.400" borderRadius="full" />
-      ),
+      headerRight: () => <Box w={10} h={10} bg="#529F83" borderRadius="full" />,
     });
   }, [navigator]);
 
@@ -205,7 +205,7 @@ export function Ecommerce() {
                 </Text>
 
                 <Link to={{screen: ''}}>
-                  <Text>See All</Text>
+                  <Text color="gray.400">See All</Text>
                 </Link>
               </HStack>
 
@@ -213,9 +213,9 @@ export function Ecommerce() {
                 horizontal
                 data={meals.data}
                 renderItem={renderMeal}
-                ItemSeparatorComponent={Spacer}
                 _contentContainerStyle={{px: '6'}}
                 keyExtractor={item => item.idMeal}
+                ItemSeparatorComponent={() => <Box w={5} />}
               />
             </VStack>
           ) : (
@@ -237,7 +237,7 @@ export function Ecommerce() {
         mx="6"
         p={6}
         bg="#529F83"
-        borderRadius={20}
+        borderRadius={25}
         alignItems="center"
         justifyContent="space-between">
         <VStack>
@@ -245,7 +245,7 @@ export function Ecommerce() {
             Cart
           </Text>
 
-          <Text bold fontSize="md" color="gray.200">
+          <Text fontWeight="medium" fontSize="md" color="gray.200">
             {cartItems.length} items
           </Text>
         </VStack>
@@ -276,10 +276,10 @@ const styles = StyleSheet.create({
     width: 90,
     borderWidth: 1,
     borderRadius: 20,
-    borderColor: '#ccc',
     alignItems: 'center',
     paddingVertical: 13,
     paddingHorizontal: 10,
+    borderColor: '#E6E7E7',
     backgroundColor: '#fff',
     justifyContent: 'center',
   },
@@ -300,8 +300,9 @@ const styles = StyleSheet.create({
     color: '#fff',
   },
   meal: {
-    borderRadius: 20,
-    paddingVertical: 20,
+    minWidth: 230,
+    borderRadius: 25,
+    paddingVertical: 10,
     paddingHorizontal: 25,
     backgroundColor: '#F8F9F9',
   },
