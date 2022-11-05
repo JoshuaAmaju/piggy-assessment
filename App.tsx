@@ -12,11 +12,11 @@ export default function App() {
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator>
+        <Stack.Navigator screenOptions={{headerShadowVisible: false}}>
           <Stack.Screen
             name={onboarding.name}
             component={onboarding.Scene}
-            options={{headerTitleAlign: 'center'}}
+            options={{headerShown: false}}
           />
         </Stack.Navigator>
       </NavigationContainer>
