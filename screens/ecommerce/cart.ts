@@ -34,7 +34,7 @@ const cartSlice = createSlice({
           meal => meal.value.idMeal !== action.payload.idMeal,
         );
       } else {
-        state.items.push(action.payload);
+        state.items.push({value: action.payload, quantity: 1});
       }
     },
     incrementQuantity: (state, action: PayloadAction<Meal['idMeal']>) => {},
