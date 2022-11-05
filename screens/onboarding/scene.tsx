@@ -9,8 +9,6 @@ import {
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 
-import {name as ecommerce} from '../ecommerce';
-
 type Slide = {title: string; image: any};
 
 const slides: Array<Slide> = [
@@ -99,7 +97,9 @@ export function Onboarding() {
           bg="blue.600"
           style={styles.btn}
           _text={{textTransform: 'uppercase'}}
-          onPress={() => navigator.navigate(ecommerce as never)}>
+          onPress={() => {
+            navigator.navigate('');
+          }}>
           Login
         </Button>
 
