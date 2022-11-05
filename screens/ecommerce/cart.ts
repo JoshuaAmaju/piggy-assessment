@@ -37,7 +37,16 @@ const cartSlice = createSlice({
         state.items.push({value: action.payload, quantity: 1});
       }
     },
-    incrementQuantity: (state, action: PayloadAction<Meal['idMeal']>) => {},
+    incrementQuantity: (state, action: PayloadAction<Meal['idMeal']>) => {
+      const existingItem = state.items.findIndex(
+        meal => meal.value.idMeal === action.payload,
+      );
+
+      if (existingItem > -1) {
+        const item = state.items[existingItem];
+        state.items[existingItem] = {...item, quantity: item.quantity + 1};
+      }
+    },
     decrementQuantity: (state, action: PayloadAction<Meal['idMeal']>) => {},
   },
 });
