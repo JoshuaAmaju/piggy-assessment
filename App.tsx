@@ -8,23 +8,32 @@ import {NativeBaseProvider} from 'native-base';
 import * as onboarding from './screens/onboarding';
 import * as ecommerce from './screens/ecommerce';
 
+const Root = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
 
 export default function App() {
   return (
     <NativeBaseProvider>
       <NavigationContainer>
-        <Stack.Navigator screenOptions={{headerShadowVisible: false}}>
-          <Stack.Screen
-            name={onboarding.name}
-            component={onboarding.Scene}
-            options={{headerShown: false}}
-          />
+        <Root.Navigator screenOptions={{headerShown: false}}>
+          <Root.Screen name={onboarding.name} component={onboarding.Scene} />
 
-          <Stack.Screen name={ecommerce.name}>
-            {() => <ecommerce.Scene />}
-          </Stack.Screen>
-        </Stack.Navigator>
+          <Root.Screen name={ecommerce.name}>
+            {() => (
+              <Stack.Navigator
+                screenOptions={{
+                  headerShadowVisible: false,
+                  contentStyle: {backgroundColor: '#fff'},
+                }}>
+                <Stack.Screen
+                  name="root"
+                  component={ecommerce.Scene}
+                  options={{headerBackVisible: false}}
+                />
+              </Stack.Navigator>
+            )}
+          </Root.Screen>
+        </Root.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
   );
