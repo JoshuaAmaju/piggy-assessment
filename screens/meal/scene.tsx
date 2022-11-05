@@ -11,7 +11,7 @@ import {
   View,
   VStack,
 } from 'native-base';
-import React from 'react';
+import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -50,6 +50,8 @@ export function Meal() {
 
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
+  const [selectedPrice, setSelectedPrice] = useState<number>(12.99);
+
   if (!params?.item) {
     return null;
   }
@@ -57,9 +59,9 @@ export function Meal() {
   const meal = params.item;
   const category = params.category;
 
-  console.log(category);
-
   const item = cartItems.find(item => item.value.idMeal === meal.idMeal);
+
+  const quantity = item?.quantity ?? 0;
 
   return (
     <View flex={1} style={{marginTop: headerHeight / 2}}>
@@ -111,7 +113,12 @@ export function Meal() {
             </HStack>
           </VStack>
 
-          <Radio.Group name="price" value="12.99" onChange={() => {}}>
+          <Radio.Group
+            name="price"
+            value={selectedPrice?.toString()}
+            onChange={val => {
+              setSelectedPrice(parseFloat(val));
+            }}>
             <HStack space={3}>
               {prices.map((price, i) => {
                 return (
@@ -165,7 +172,7 @@ export function Meal() {
           <HStack space={2} alignItems="center" justifyContent="space-between">
             <Text bold>
               Total: <Text color="#529F83">$</Text>
-              9.99
+              {selectedPrice * quantity}
             </Text>
 
             <HStack space={2} alignItems="center">
@@ -177,7 +184,7 @@ export function Meal() {
                 }}>
                 -
               </Button>
-              <Text>{item?.quantity ?? 0}</Text>
+              <Text>{quantity}</Text>
               <Button
                 py={1}
                 variant="outline"
