@@ -12,6 +12,13 @@ import {
   VStack,
 } from 'native-base';
 import React from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+
+import {
+  incrementQuantity,
+  decrementQuantity,
+  RootState,
+} from '../ecommerce/cart';
 
 import {Category, Meal as IMeal} from '../ecommerce/types';
 
@@ -39,6 +46,10 @@ export function Meal() {
 
   const headerHeight = useHeaderHeight();
 
+  const dispatch = useDispatch();
+
+  const cartItems = useSelector((state: RootState) => state.cart.items);
+
   if (!params?.item) {
     return null;
   }
@@ -46,12 +57,17 @@ export function Meal() {
   const meal = params.item;
   const category = params.category;
 
+  console.log(category);
+
+  const item = cartItems.find(item => item.value.idMeal === meal.idMeal);
+
   return (
     <View flex={1} style={{marginTop: headerHeight / 2}}>
       <Center zIndex={2} position="relative">
         <Image
           w={imageSize}
           h={imageSize}
+          alt={meal.strMeal}
           borderRadius="full"
           source={{uri: meal.strMealThumb}}
         />
@@ -69,7 +85,7 @@ export function Meal() {
             to give accurate result when we offset this container it upwards to five the desired effect */}
           <Box w={imageSize / 2} h={imageSize / 2} />
 
-          <VStack alignItems="center">
+          <VStack space={4} alignItems="center">
             <Text bold fontSize="2xl" textAlign="center">
               {meal.strMeal}
             </Text>
@@ -77,11 +93,12 @@ export function Meal() {
             {category && (
               <HStack alignItems="center" space={3}>
                 <Image
-                  w={10}
-                  h={10}
+                  w={7}
+                  h={7}
+                  alt={category.strCategoryDescription}
                   source={{uri: category.strCategoryThumb}}
                 />
-                <Text>{category.strCategory}</Text>
+                <Text color="gray.400">{category.strCategory}</Text>
               </HStack>
             )}
 
@@ -152,11 +169,21 @@ export function Meal() {
             </Text>
 
             <HStack space={2} alignItems="center">
-              <Button py={1} variant="outline">
+              <Button
+                py={1}
+                variant="outline"
+                onPress={() => {
+                  dispatch(decrementQuantity(meal.idMeal));
+                }}>
                 -
               </Button>
-              <Text>20</Text>
-              <Button py={1} variant="outline">
+              <Text>{item?.quantity ?? 0}</Text>
+              <Button
+                py={1}
+                variant="outline"
+                onPress={() => {
+                  dispatch(incrementQuantity(meal.idMeal));
+                }}>
                 +
               </Button>
             </HStack>
