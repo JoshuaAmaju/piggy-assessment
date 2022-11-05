@@ -13,7 +13,7 @@ import {
   Text,
   VStack,
 } from 'native-base';
-import React, {useCallback, useLayoutEffect, useState} from 'react';
+import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
 
 import {cycle, RootState} from './cart';
 
@@ -46,6 +46,8 @@ export function Ecommerce() {
     select: data => data.slice(0, 6),
   });
 
+  const [searchTerm, setSearchTerm] = useState<string>();
+
   const [_selectedCategory, setSelectedCategory] =
     useState<Category['strCategory']>();
 
@@ -62,6 +64,16 @@ export function Ecommerce() {
       select: data => data.slice(0, 5),
     },
   );
+
+  const searchResult = useMemo(() => {
+    return searchTerm
+      ? meals.data?.filter(meal => {
+          return meal.strMeal
+            .toLowerCase()
+            .includes(searchTerm.toLocaleLowerCase());
+        })
+      : meals.data;
+  }, [meals.data, searchTerm]);
 
   const renderCategory = useCallback<ListRenderItem<Category>>(
     ({item}) => {
@@ -183,6 +195,7 @@ export function Ecommerce() {
               borderColor="#E6E5E5"
               placeholder="Search.."
               _stack={{px: '4', py: '2'}}
+              onChangeText={setSearchTerm}
               InputLeftElement={
                 <Box>
                   <MagnifyingGlass width={25} height={25} color="#000" />
@@ -259,10 +272,17 @@ export function Ecommerce() {
 
                 <FlatList
                   horizontal
-                  data={meals.data}
                   renderItem={renderMeal}
-                  _contentContainerStyle={{px: '6'}}
+                  data={searchResult ?? meals.data}
                   keyExtractor={item => item.idMeal}
+                  _contentContainerStyle={{px: '6', minW: '100%'}}
+                  ListEmptyComponent={() => (
+                    <Center p="4" w="full">
+                      <Text fontSize="2xl" color="gray.300">
+                        No matching result
+                      </Text>
+                    </Center>
+                  )}
                   ItemSeparatorComponent={() => <Box w={5} />}
                 />
               </VStack>
