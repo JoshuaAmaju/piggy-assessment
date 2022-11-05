@@ -3,8 +3,10 @@ import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import * as onboarding from './screens/onboarding';
 import {NativeBaseProvider} from 'native-base';
+
+import * as onboarding from './screens/onboarding';
+import * as ecommerce from './screens/ecommerce';
 
 const Stack = createNativeStackNavigator();
 
@@ -18,6 +20,10 @@ export default function App() {
             component={onboarding.Scene}
             options={{headerShown: false}}
           />
+
+          <Stack.Screen name={ecommerce.name}>
+            {() => <ecommerce.Scene />}
+          </Stack.Screen>
         </Stack.Navigator>
       </NavigationContainer>
     </NativeBaseProvider>
