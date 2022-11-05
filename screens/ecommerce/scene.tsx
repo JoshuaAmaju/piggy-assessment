@@ -8,6 +8,7 @@ import {
   IconButton,
   Image,
   Input,
+  PresenceTransition,
   ScrollView,
   Spinner,
   Text,
@@ -17,6 +18,7 @@ import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
 
 import {cycle, RootState} from './cart';
 
+import Check from './assets/check.svg';
 import Clock from '../../assets/clock.svg';
 import ShoppingBag from './assets/shopping.bag.svg';
 import MagnifyingGlass from './assets/magnifying.glass.svg';
@@ -105,6 +107,8 @@ export function Ecommerce() {
 
   const renderMeal = useCallback<ListRenderItem<Meal>>(
     ({item}) => {
+      const inCart = cartItems.find(n => n.value.idMeal === item.idMeal);
+
       return (
         <TouchableOpacity
           style={styles.meal}
@@ -153,17 +157,28 @@ export function Ecommerce() {
               </VStack>
 
               <IconButton
-                bg="white"
                 borderRadius="xl"
+                bg={inCart ? '#529F83' : 'white'}
                 onPress={() => dispatch(cycle(item))}
-                icon={<ShoppingBag width={20} height={20} color="#000" />}
+                icon={
+                  inCart ? (
+                    <PresenceTransition
+                      visible={!!inCart}
+                      animate={{scale: 1}}
+                      initial={{scale: 0.6}}>
+                      <Check width={20} height={20} color="#fff" />
+                    </PresenceTransition>
+                  ) : (
+                    <ShoppingBag width={20} height={20} color="#000" />
+                  )
+                }
               />
             </HStack>
           </VStack>
         </TouchableOpacity>
       );
     },
-    [categories.data, dispatch, navigator, selectedCategory],
+    [cartItems, categories.data, dispatch, navigator, selectedCategory],
   );
 
   useLayoutEffect(() => {
