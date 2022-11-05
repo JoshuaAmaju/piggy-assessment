@@ -12,16 +12,32 @@ export type State = {
 
 const cartSlice = createSlice({
   name: 'cart',
-  initialState: {items: []},
+  initialState: {items: []} as State,
   reducers: {
     add: (state, action: PayloadAction<Meal>) => {},
     remove: (state, action: PayloadAction<Meal['idMeal']>) => {},
+    cycle: (state, action: PayloadAction<Meal>) => {
+      // Add item to cart if not present. Or remove from cart if present
+
+      const existingItem = state.items.find(
+        meal => meal.value.idMeal === action.payload.idMeal,
+      );
+
+      if (existingItem) {
+        state.items = state.items.filter(
+          meal => meal.value.idMeal !== action.payload.idMeal,
+        );
+      } else {
+        state.items.push(action.payload);
+      }
+    },
     incrementQuantity: (state, action: PayloadAction<Meal['idMeal']>) => {},
     decrementQuantity: (state, action: PayloadAction<Meal['idMeal']>) => {},
   },
 });
 
-export const {add, remove} = cartSlice.actions;
+export const {add, remove, incrementQuantity, decrementQuantity} =
+  cartSlice.actions;
 
 export const store = configureStore({
   reducer: {cart: cartSlice.reducer},
