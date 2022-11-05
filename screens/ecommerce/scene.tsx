@@ -90,7 +90,12 @@ export function Ecommerce() {
           style={styles.meal}
           onPress={() => {
             // @ts-ignore
-            navigator.navigate(meal, {item, category: selectedCategory});
+            navigator.navigate(meal, {
+              item,
+              category: categories.data?.find(
+                item => item.strCategory === selectedCategory,
+              ),
+            });
           }}>
           <VStack space={6} justifyContent="space-between">
             <VStack space={2} alignItems="center">
@@ -109,8 +114,8 @@ export function Ecommerce() {
 
             <Image
               alt={item.strMeal}
-              style={styles.mealThumb}
               alignSelf="center"
+              style={styles.mealThumb}
               source={{uri: item.strMealThumb}}
             />
 
