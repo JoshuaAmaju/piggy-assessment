@@ -12,54 +12,15 @@ import {
 } from 'native-base';
 import React, {useCallback, useLayoutEffect, useState} from 'react';
 
+import {cycle, RootState} from './cart';
+
 // import {MaterialIcons} from '@expo/vector-icons';
 
 import {ListRenderItem, StyleSheet, TouchableOpacity} from 'react-native';
 import {useQuery} from 'react-query';
-
-type Category = {
-  idCategory: string;
-  strCategory: string;
-  strCategoryThumb: string;
-  strCategoryDescription: string;
-};
-
-type Meal = {
-  idMeal: string;
-  strMeal: string;
-  strMealThumb: string;
-};
-
-async function getCategories() {
-  const res = await fetch(
-    'https://www.themealdb.com/api/json/v1/1/categories.php',
-  );
-
-  if (!res.ok) {
-    throw new Error('An error occurred');
-  }
-
-  const json = await res.json();
-
-  return (json as {categories: Array<Category>}).categories;
-  // return [];
-}
-
-async function getMealsByCategory(
-  category: Category['strCategory'],
-): Promise<Array<Meal>> {
-  const res = await fetch(
-    `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`,
-  );
-
-  if (!res.ok) {
-    throw new Error('An error occurred while fetching categories');
-  }
-
-  const json = await res.json();
-
-  return (json as {meals: Array<Meal>}).meals;
-}
+import {useDispatch, useSelector} from 'react-redux';
+import {Category, Meal} from './types';
+import {getCategories, getMealsByCategory} from './query';
 
 function Spacer() {
   return <Box w={3} />;
@@ -67,6 +28,9 @@ function Spacer() {
 
 export function Ecommerce() {
   const navigator = useNavigation();
+
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state: RootState) => state.cart.items);
 
   const categories = useQuery(['categories'], getCategories, {
     select: data => data.slice(0, 6),
@@ -117,42 +81,53 @@ export function Ecommerce() {
     [selectedCategory],
   );
 
-  const renderMeal = useCallback<ListRenderItem<Meal>>(({item}) => {
-    return (
-      <TouchableOpacity style={styles.meal} onPress={() => {}}>
-        <VStack space={6} justifyContent="space-between">
-          <VStack>
-            <Text fontSize="md" style={styles.mealTitle}>
-              {item.strMeal}
-            </Text>
+  const renderMeal = useCallback<ListRenderItem<Meal>>(
+    ({item}) => {
+      return (
+        <TouchableOpacity style={styles.meal} onPress={() => {}}>
+          <VStack space={6} justifyContent="space-between">
+            <VStack space={2} alignItems="center">
+              <Text
+                fontSize="md"
+                maxWidth={200}
+                numberOfLines={2}
+                style={styles.mealTitle}>
+                {item.strMeal}
+              </Text>
 
-            <Text fontSize="md" style={styles.mealTitle}>
-              <Text color="#529F83">$</Text>9.99
-            </Text>
-          </VStack>
-
-          <Image
-            alt={item.strMeal}
-            style={styles.mealThumb}
-            source={{uri: item.strMealThumb}}
-          />
-
-          <HStack space={2} alignItems="center" justifyContent="space-between">
-            <VStack>
-              <Text>🔥 44 calories</Text>
-              <Text>20 mins</Text>
+              <Text fontSize="md" style={styles.mealTitle}>
+                <Text color="#529F83">$</Text>9.99
+              </Text>
             </VStack>
 
-            {/* <IconButton
+            <Image
+              alt={item.strMeal}
+              style={styles.mealThumb}
+              alignSelf="center"
+              source={{uri: item.strMealThumb}}
+            />
+
+            <HStack
+              space={2}
+              alignItems="center"
+              justifyContent="space-between">
+              <VStack>
+                <Text>🔥 44 calories</Text>
+                <Text>20 mins</Text>
+              </VStack>
+
+              {/* <IconButton
               icon={<Icon as={MaterialIcons} name="add-shopping-cart" />}
             /> */}
 
-            <Button onPress={() => {}}>Add</Button>
-          </HStack>
-        </VStack>
-      </TouchableOpacity>
-    );
-  }, []);
+              <Button onPress={() => dispatch(cycle(item))}>Add</Button>
+            </HStack>
+          </VStack>
+        </TouchableOpacity>
+      );
+    },
+    [dispatch],
+  );
 
   useLayoutEffect(() => {
     navigator.setOptions({
@@ -174,68 +149,105 @@ export function Ecommerce() {
 
   return (
     <VStack flex={1}>
-      <VStack space={6}>
-        {categories.data ? (
-          <FlatList
-            horizontal
-            data={categories.data}
-            renderItem={renderCategory}
-            ItemSeparatorComponent={Spacer}
-            _contentContainerStyle={{px: '6'}}
-            keyExtractor={item => item.idCategory}
-            showsHorizontalScrollIndicator={false}
-          />
-        ) : (
-          <Center p={4}>
-            {categories.isLoading ? (
-              <Spinner />
-            ) : categories.isError ? (
-              <VStack space={2}>
-                <Text>An error occurred</Text>
-                <Button onPress={() => categories.refetch()}>Retry</Button>
-              </VStack>
-            ) : null}
-          </Center>
-        )}
-
-        {meals.data ? (
-          <VStack space={4}>
-            <HStack
-              px="6"
-              space={2}
-              alignItems="center"
-              justifyContent="space-between">
-              <Text bold fontSize="2xl">
-                Popular Items
-              </Text>
-
-              <Link to={{screen: ''}}>
-                <Text>See All</Text>
-              </Link>
-            </HStack>
-
+      <VStack flex={1}>
+        <VStack space={6}>
+          {categories.data ? (
             <FlatList
               horizontal
-              data={meals.data}
-              renderItem={renderMeal}
+              data={categories.data}
+              renderItem={renderCategory}
               ItemSeparatorComponent={Spacer}
               _contentContainerStyle={{px: '6'}}
-              keyExtractor={item => item.idMeal}
+              keyExtractor={item => item.idCategory}
+              showsHorizontalScrollIndicator={false}
             />
-          </VStack>
-        ) : (
-          <Center p={4} flex={1}>
-            {meals.isLoading ? (
-              <Spinner size="lg" />
-            ) : meals.isError ? (
-              <VStack space={2}>
-                <Text>An error occurred</Text>
-                <Button onPress={() => meals.refetch()}>Retry</Button>
-              </VStack>
-            ) : null}
-          </Center>
-        )}
+          ) : (
+            <Center p={4}>
+              {categories.isLoading ? (
+                <Spinner />
+              ) : categories.isError ? (
+                <VStack space={2}>
+                  <Text>An error occurred</Text>
+                  <Button onPress={() => categories.refetch()}>Retry</Button>
+                </VStack>
+              ) : null}
+            </Center>
+          )}
+
+          {meals.data ? (
+            <VStack space={4}>
+              <HStack
+                px="6"
+                space={2}
+                alignItems="center"
+                justifyContent="space-between">
+                <Text bold fontSize="2xl">
+                  Popular Items
+                </Text>
+
+                <Link to={{screen: ''}}>
+                  <Text>See All</Text>
+                </Link>
+              </HStack>
+
+              <FlatList
+                horizontal
+                data={meals.data}
+                renderItem={renderMeal}
+                ItemSeparatorComponent={Spacer}
+                _contentContainerStyle={{px: '6'}}
+                keyExtractor={item => item.idMeal}
+              />
+            </VStack>
+          ) : (
+            <Center p={4} flex={1}>
+              {meals.isLoading ? (
+                <Spinner size="lg" />
+              ) : meals.isError ? (
+                <VStack space={2}>
+                  <Text>An error occurred</Text>
+                  <Button onPress={() => meals.refetch()}>Retry</Button>
+                </VStack>
+              ) : null}
+            </Center>
+          )}
+        </VStack>
       </VStack>
+
+      <HStack
+        m="6"
+        p={6}
+        bg="#529F83"
+        borderRadius={20}
+        alignItems="center"
+        justifyContent="space-between">
+        <VStack>
+          <Text bold fontSize="2xl" color="white">
+            Cart
+          </Text>
+
+          <Text bold fontSize="md" color="gray.200">
+            {cartItems.length} items
+          </Text>
+        </VStack>
+
+        <HStack space={2}>
+          {cartItems.slice(0, 2).map(item => {
+            return (
+              <Image
+                w={20}
+                h={20}
+                borderWidth={4}
+                borderRadius="full"
+                borderColor="white"
+                key={item.value.idMeal}
+                alt={item.value.strMeal}
+                source={{uri: item.value.strMealThumb}}
+              />
+            );
+          })}
+        </HStack>
+      </HStack>
     </VStack>
   );
 }
@@ -270,7 +282,7 @@ const styles = StyleSheet.create({
   },
   meal: {
     borderRadius: 20,
-    paddingVertical: 30,
+    paddingVertical: 20,
     paddingHorizontal: 25,
     backgroundColor: '#F8F9F9',
   },
@@ -280,6 +292,7 @@ const styles = StyleSheet.create({
     borderRadius: 100,
   },
   mealTitle: {
+    // maxWidth: '70%',
     fontWeight: 'bold',
     textAlign: 'center',
   },

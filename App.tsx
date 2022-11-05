@@ -7,7 +7,10 @@ import {NativeBaseProvider} from 'native-base';
 
 import * as onboarding from './screens/onboarding';
 import * as ecommerce from './screens/ecommerce';
+import {store as cart} from './screens/ecommerce/cart';
+
 import {QueryClient, QueryClientProvider} from 'react-query';
+import {Provider} from 'react-redux';
 
 const Root = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
@@ -24,17 +27,19 @@ export default function App() {
           <Root.Screen name={ecommerce.name}>
             {() => (
               <QueryClientProvider client={client}>
-                <Stack.Navigator
-                  screenOptions={{
-                    headerShadowVisible: false,
-                    contentStyle: {backgroundColor: '#fff'},
-                  }}>
-                  <Stack.Screen
-                    name="root"
-                    component={ecommerce.Scene}
-                    options={{headerBackVisible: false}}
-                  />
-                </Stack.Navigator>
+                <Provider store={cart}>
+                  <Stack.Navigator
+                    screenOptions={{
+                      headerShadowVisible: false,
+                      contentStyle: {backgroundColor: '#fff'},
+                    }}>
+                    <Stack.Screen
+                      name="root"
+                      component={ecommerce.Scene}
+                      options={{headerBackVisible: false}}
+                    />
+                  </Stack.Navigator>
+                </Provider>
               </QueryClientProvider>
             )}
           </Root.Screen>
