@@ -12,54 +12,15 @@ import {
 } from 'native-base';
 import React, {useCallback, useLayoutEffect, useState} from 'react';
 
+import {add, remove, State} from './cart';
+
 // import {MaterialIcons} from '@expo/vector-icons';
 
 import {ListRenderItem, StyleSheet, TouchableOpacity} from 'react-native';
 import {useQuery} from 'react-query';
-
-type Category = {
-  idCategory: string;
-  strCategory: string;
-  strCategoryThumb: string;
-  strCategoryDescription: string;
-};
-
-type Meal = {
-  idMeal: string;
-  strMeal: string;
-  strMealThumb: string;
-};
-
-async function getCategories() {
-  const res = await fetch(
-    'https://www.themealdb.com/api/json/v1/1/categories.php',
-  );
-
-  if (!res.ok) {
-    throw new Error('An error occurred');
-  }
-
-  const json = await res.json();
-
-  return (json as {categories: Array<Category>}).categories;
-  // return [];
-}
-
-async function getMealsByCategory(
-  category: Category['strCategory'],
-): Promise<Array<Meal>> {
-  const res = await fetch(
-    `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`,
-  );
-
-  if (!res.ok) {
-    throw new Error('An error occurred while fetching categories');
-  }
-
-  const json = await res.json();
-
-  return (json as {meals: Array<Meal>}).meals;
-}
+import {useDispatch, useSelector} from 'react-redux';
+import {Category} from './types';
+import {getCategories, getMealsByCategory} from './query';
 
 function Spacer() {
   return <Box w={3} />;
@@ -67,6 +28,9 @@ function Spacer() {
 
 export function Ecommerce() {
   const navigator = useNavigation();
+
+  const dispatch = useDispatch();
+  const cartItems = useSelector((state: State) => state.items);
 
   const categories = useQuery(['categories'], getCategories, {
     select: data => data.slice(0, 6),
