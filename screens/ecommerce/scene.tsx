@@ -238,7 +238,7 @@ export function Ecommerce() {
             ) : (
               <Center p={4}>
                 {categories.isLoading ? (
-                  <Spinner />
+                  <Spinner size="sm" color="#529F83" />
                 ) : categories.isError ? (
                   <VStack space={2}>
                     <Text fontSize="lg">An error occurred</Text>
@@ -289,7 +289,7 @@ export function Ecommerce() {
             ) : (
               <Center p={4}>
                 {meals.isLoading ? (
-                  <Spinner size="lg" />
+                  <Spinner size="lg" color="#529F83" />
                 ) : meals.isError ? (
                   <VStack space={2}>
                     <Text fontSize="xl">An error occurred</Text>
@@ -304,40 +304,42 @@ export function Ecommerce() {
         </VStack>
       </ScrollView>
 
-      <HStack
-        p={6}
-        mx="6"
-        mb="6"
-        bg="#529F83"
-        borderRadius={25}
-        alignItems="center"
-        justifyContent="space-between">
-        <VStack>
-          <Text bold fontSize="2xl" color="white">
-            Cart
-          </Text>
+      {cartItems.length > 0 && (
+        <HStack
+          p={6}
+          mx="6"
+          mb="6"
+          bg="#529F83"
+          borderRadius={25}
+          alignItems="center"
+          justifyContent="space-between">
+          <VStack>
+            <Text bold fontSize="2xl" color="white">
+              Cart
+            </Text>
 
-          <Text fontWeight="medium" fontSize="md" color="gray.200">
-            {cartItems.length} items
-          </Text>
-        </VStack>
+            <Text fontWeight="medium" fontSize="md" color="gray.200">
+              {cartItems.length} items
+            </Text>
+          </VStack>
 
-        <HStack space={2}>
-          {cartItems.slice(0, 2).map(item => {
-            return (
-              <Image
-                borderWidth={4}
-                borderRadius="full"
-                borderColor="white"
-                key={item.value.idMeal}
-                alt={item.value.strMeal}
-                style={{width: 50, height: 50}}
-                source={{uri: item.value.strMealThumb}}
-              />
-            );
-          })}
+          <HStack space={2}>
+            {cartItems.slice(0, 2).map(item => {
+              return (
+                <Image
+                  borderWidth={4}
+                  borderRadius="full"
+                  borderColor="white"
+                  key={item.value.idMeal}
+                  alt={item.value.strMeal}
+                  style={{width: 50, height: 50}}
+                  source={{uri: item.value.strMealThumb}}
+                />
+              );
+            })}
+          </HStack>
         </HStack>
-      </HStack>
+      )}
     </VStack>
   );
 }
