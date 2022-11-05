@@ -40,7 +40,16 @@ export default function App() {
                       component={ecommerce.Scene}
                       options={{headerBackVisible: false}}
                     />
-                    <Stack.Screen name={meal.name} component={meal.Scene} />
+                    <Stack.Screen
+                      name={meal.name}
+                      component={meal.Scene}
+                      options={{
+                        title: '',
+                        headerTintColor: '#fff',
+                        headerTransparent: true,
+                        contentStyle: {backgroundColor: '#529F83'},
+                      }}
+                    />
                   </Stack.Navigator>
                 </Provider>
               </QueryClientProvider>
