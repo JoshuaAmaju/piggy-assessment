@@ -11,19 +11,17 @@ import {useNavigation} from '@react-navigation/native';
 
 type Slide = {title: string; image: any};
 
-const slide = require('./assets/slide.png');
-
 const slides: Array<Slide> = [
   {
-    image: slide,
+    image: require('./assets/slide-one.png'),
     title: 'Build your savings with ease & discipline',
   },
   {
-    image: slide,
+    image: require('./assets/slide-two.png'),
     title: 'Invest with ease in verified opportunities',
   },
   {
-    image: slide,
+    image: require('./assets/slide-three.png'),
     title: "Lock funds you don't want to be tempted to touch",
   },
 ];
@@ -69,12 +67,10 @@ export function Onboarding() {
           horizontal
           data={slides}
           ref={slidesRef}
-          // style={{flex: 1}}
           pagingEnabled={true}
           renderItem={renderSlide}
           keyExtractor={(_, i) => i.toString()}
           showsHorizontalScrollIndicator={false}
-          // contentContainerStyle={{minHeight: '100%'}}
           onMomentumScrollEnd={({nativeEvent}) => {
             const {contentOffset} = nativeEvent;
             setIndex(contentOffset.x / width);
@@ -128,9 +124,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    // width: '100%',
-    maxWidth: '100%',
     height: 300,
+    maxWidth: '100%',
   },
   dot: {
     width: 20,
