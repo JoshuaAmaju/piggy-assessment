@@ -7,9 +7,12 @@ import {NativeBaseProvider} from 'native-base';
 
 import * as onboarding from './screens/onboarding';
 import * as ecommerce from './screens/ecommerce';
+import {QueryClient, QueryClientProvider} from 'react-query';
 
 const Root = createNativeStackNavigator();
 const Stack = createNativeStackNavigator();
+
+const client = new QueryClient();
 
 export default function App() {
   return (
@@ -20,17 +23,19 @@ export default function App() {
 
           <Root.Screen name={ecommerce.name}>
             {() => (
-              <Stack.Navigator
-                screenOptions={{
-                  headerShadowVisible: false,
-                  contentStyle: {backgroundColor: '#fff'},
-                }}>
-                <Stack.Screen
-                  name="root"
-                  component={ecommerce.Scene}
-                  options={{headerBackVisible: false}}
-                />
-              </Stack.Navigator>
+              <QueryClientProvider client={client}>
+                <Stack.Navigator
+                  screenOptions={{
+                    headerShadowVisible: false,
+                    contentStyle: {backgroundColor: '#fff'},
+                  }}>
+                  <Stack.Screen
+                    name="root"
+                    component={ecommerce.Scene}
+                    options={{headerBackVisible: false}}
+                  />
+                </Stack.Navigator>
+              </QueryClientProvider>
             )}
           </Root.Screen>
         </Root.Navigator>
