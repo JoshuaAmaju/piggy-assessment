@@ -86,8 +86,12 @@ export function Ecommerce() {
       return (
         <TouchableOpacity style={styles.meal} onPress={() => {}}>
           <VStack space={6} justifyContent="space-between">
-            <VStack>
-              <Text fontSize="md" style={styles.mealTitle}>
+            <VStack space={2} alignItems="center">
+              <Text
+                fontSize="md"
+                maxWidth={200}
+                numberOfLines={2}
+                style={styles.mealTitle}>
                 {item.strMeal}
               </Text>
 
@@ -99,6 +103,7 @@ export function Ecommerce() {
             <Image
               alt={item.strMeal}
               style={styles.mealThumb}
+              alignSelf="center"
               source={{uri: item.strMealThumb}}
             />
 
@@ -141,8 +146,6 @@ export function Ecommerce() {
       ),
     });
   }, [navigator]);
-
-  console.log(cartItems);
 
   return (
     <VStack flex={1}>
@@ -237,6 +240,7 @@ export function Ecommerce() {
                 borderWidth={4}
                 borderRadius="full"
                 borderColor="white"
+                key={item.value.idMeal}
                 alt={item.value.strMeal}
                 source={{uri: item.value.strMealThumb}}
               />
@@ -278,7 +282,7 @@ const styles = StyleSheet.create({
   },
   meal: {
     borderRadius: 20,
-    paddingVertical: 30,
+    paddingVertical: 20,
     paddingHorizontal: 25,
     backgroundColor: '#F8F9F9',
   },
