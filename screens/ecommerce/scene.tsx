@@ -1,21 +1,21 @@
-import React, {useState} from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {Link, useNavigation} from '@react-navigation/native';
 import {
   Box,
   Button,
   Center,
   FlatList,
+  HStack,
   Image,
   Spinner,
   Text,
-  View,
   VStack,
 } from 'native-base';
-import {useCallback, useLayoutEffect} from 'react';
+import React, {useCallback, useLayoutEffect, useState} from 'react';
 
-import axios from 'axios';
-import {useQuery} from 'react-query';
+// import {MaterialIcons} from '@expo/vector-icons';
+
 import {ListRenderItem, StyleSheet, TouchableOpacity} from 'react-native';
+import {useQuery} from 'react-query';
 
 type Category = {
   idCategory: string;
@@ -36,7 +36,7 @@ async function getCategories() {
   );
 
   if (!res.ok) {
-    throw new Error('An error occurred while fetching categories');
+    throw new Error('An error occurred');
   }
 
   const json = await res.json();
@@ -45,12 +45,20 @@ async function getCategories() {
   // return [];
 }
 
-async function getMealsByCategory(category: Category['strCategory']) {
-  // const res = await axios.get<{meals: Array<Meal>}>(
-  //   'https://www.themealdb.com/api/json/v1/1/filter.php',
-  //   {params: {c: category}},
-  // );
-  // return res.data.meals;
+async function getMealsByCategory(
+  category: Category['strCategory'],
+): Promise<Array<Meal>> {
+  const res = await fetch(
+    `https://www.themealdb.com/api/json/v1/1/filter.php?c=${category}`,
+  );
+
+  if (!res.ok) {
+    throw new Error('An error occurred while fetching categories');
+  }
+
+  const json = await res.json();
+
+  return (json as {meals: Array<Meal>}).meals;
 }
 
 function Spacer() {
@@ -64,15 +72,21 @@ export function Ecommerce() {
     select: data => data.slice(0, 6),
   });
 
-  console.log(categories.data);
-
-  const [selectedCategory, setSelectedCategory] =
+  const [_selectedCategory, setSelectedCategory] =
     useState<Category['strCategory']>();
 
+  const initialSelectedCategory = categories.data?.[0].strCategory;
+
+  const selectedCategory = _selectedCategory || initialSelectedCategory;
+
+  // Only fetch items in selected category if a category is selected
   const meals = useQuery(
     ['meals', selectedCategory],
     () => getMealsByCategory(selectedCategory!),
-    {enabled: !!selectedCategory},
+    {
+      enabled: !!selectedCategory,
+      select: data => data.slice(0, 5),
+    },
   );
 
   const renderCategory = useCallback<ListRenderItem<Category>>(
@@ -103,6 +117,43 @@ export function Ecommerce() {
     [selectedCategory],
   );
 
+  const renderMeal = useCallback<ListRenderItem<Meal>>(({item}) => {
+    return (
+      <TouchableOpacity style={styles.meal} onPress={() => {}}>
+        <VStack space={6} justifyContent="space-between">
+          <VStack>
+            <Text fontSize="md" style={styles.mealTitle}>
+              {item.strMeal}
+            </Text>
+
+            <Text fontSize="md" style={styles.mealTitle}>
+              <Text color="#529F83">$</Text>9.99
+            </Text>
+          </VStack>
+
+          <Image
+            alt={item.strMeal}
+            style={styles.mealThumb}
+            source={{uri: item.strMealThumb}}
+          />
+
+          <HStack space={2} alignItems="center" justifyContent="space-between">
+            <VStack>
+              <Text>🔥 44 calories</Text>
+              <Text>20 mins</Text>
+            </VStack>
+
+            {/* <IconButton
+              icon={<Icon as={MaterialIcons} name="add-shopping-cart" />}
+            /> */}
+
+            <Button onPress={() => {}}>Add</Button>
+          </HStack>
+        </VStack>
+      </TouchableOpacity>
+    );
+  }, []);
+
   useLayoutEffect(() => {
     navigator.setOptions({
       headerTitle: () => (
@@ -122,30 +173,70 @@ export function Ecommerce() {
   }, [navigator]);
 
   return (
-    <View>
-      {categories.data ? (
-        <FlatList
-          horizontal
-          data={categories.data}
-          renderItem={renderCategory}
-          ItemSeparatorComponent={Spacer}
-          _contentContainerStyle={{px: '6'}}
-          keyExtractor={item => item.idCategory}
-          showsHorizontalScrollIndicator={false}
-        />
-      ) : (
-        <Center p={4}>
-          {categories.isLoading ? (
-            <Spinner />
-          ) : categories.isError ? (
-            <VStack space={2}>
-              <Text>An error occurred</Text>
-              <Button onPress={() => categories.refetch()}>Retry</Button>
-            </VStack>
-          ) : null}
-        </Center>
-      )}
-    </View>
+    <VStack flex={1}>
+      <VStack space={6}>
+        {categories.data ? (
+          <FlatList
+            horizontal
+            data={categories.data}
+            renderItem={renderCategory}
+            ItemSeparatorComponent={Spacer}
+            _contentContainerStyle={{px: '6'}}
+            keyExtractor={item => item.idCategory}
+            showsHorizontalScrollIndicator={false}
+          />
+        ) : (
+          <Center p={4}>
+            {categories.isLoading ? (
+              <Spinner />
+            ) : categories.isError ? (
+              <VStack space={2}>
+                <Text>An error occurred</Text>
+                <Button onPress={() => categories.refetch()}>Retry</Button>
+              </VStack>
+            ) : null}
+          </Center>
+        )}
+
+        {meals.data ? (
+          <VStack space={4}>
+            <HStack
+              px="6"
+              space={2}
+              alignItems="center"
+              justifyContent="space-between">
+              <Text bold fontSize="2xl">
+                Popular Items
+              </Text>
+
+              <Link to={{screen: ''}}>
+                <Text>See All</Text>
+              </Link>
+            </HStack>
+
+            <FlatList
+              horizontal
+              data={meals.data}
+              renderItem={renderMeal}
+              ItemSeparatorComponent={Spacer}
+              _contentContainerStyle={{px: '6'}}
+              keyExtractor={item => item.idMeal}
+            />
+          </VStack>
+        ) : (
+          <Center p={4} flex={1}>
+            {meals.isLoading ? (
+              <Spinner size="lg" />
+            ) : meals.isError ? (
+              <VStack space={2}>
+                <Text>An error occurred</Text>
+                <Button onPress={() => meals.refetch()}>Retry</Button>
+              </VStack>
+            ) : null}
+          </Center>
+        )}
+      </VStack>
+    </VStack>
   );
 }
 
@@ -176,5 +267,20 @@ const styles = StyleSheet.create({
   },
   selectedCategoryTitle: {
     color: '#fff',
+  },
+  meal: {
+    borderRadius: 20,
+    paddingVertical: 30,
+    paddingHorizontal: 25,
+    backgroundColor: '#F8F9F9',
+  },
+  mealThumb: {
+    width: 120,
+    height: 120,
+    borderRadius: 100,
+  },
+  mealTitle: {
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
