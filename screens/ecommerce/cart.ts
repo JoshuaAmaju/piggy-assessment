@@ -15,7 +15,11 @@ const cartSlice = createSlice({
   initialState: {items: []} as State,
   reducers: {
     add: (state, action: PayloadAction<Meal>) => {},
-    remove: (state, action: PayloadAction<Meal['idMeal']>) => {},
+    remove: (state, action: PayloadAction<Meal['idMeal']>) => {
+      state.items = state.items.filter(
+        meal => meal.value.idMeal !== action.payload,
+      );
+    },
     cycle: (state, action: PayloadAction<Meal>) => {
       // Add item to cart if not present. Or remove from cart if present
 
