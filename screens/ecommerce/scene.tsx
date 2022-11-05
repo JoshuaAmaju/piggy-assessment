@@ -136,7 +136,7 @@ export function Ecommerce() {
 
                 <HStack space={2} alignItems="center">
                   <Clock width={20} height={20} color="#7E7E7F" />
-                  <Text color="#7E7E7F">20 mins</Text>
+                  <Text color="#7E7E7F">20 min</Text>
                 </HStack>
               </VStack>
 
