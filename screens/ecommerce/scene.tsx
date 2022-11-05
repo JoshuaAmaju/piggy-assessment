@@ -24,8 +24,6 @@ import ShoppingBag from './assets/shopping.bag.svg';
 import MagnifyingGlass from './assets/magnifying.glass.svg';
 import AdjustmentsHorizontal from './assets/adjustments.horizontal.svg';
 
-// import {MaterialIcons} from '@expo/vector-icons';
-
 import {ListRenderItem, StyleSheet, TouchableOpacity} from 'react-native';
 import {useQuery} from 'react-query';
 import {useDispatch, useSelector} from 'react-redux';
