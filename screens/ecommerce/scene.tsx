@@ -5,6 +5,7 @@ import {
   Center,
   FlatList,
   HStack,
+  IconButton,
   Image,
   Spinner,
   Text,
@@ -13,6 +14,9 @@ import {
 import React, {useCallback, useLayoutEffect, useState} from 'react';
 
 import {cycle, RootState} from './cart';
+
+import Clock from './assets/clock.svg';
+import ShoppingBag from './assets/shopping.bag.svg';
 
 // import {MaterialIcons} from '@expo/vector-icons';
 
@@ -128,17 +132,20 @@ export function Ecommerce() {
                 <Text>20 mins</Text>
               </VStack>
 
-              {/* <IconButton
-              icon={<Icon as={MaterialIcons} name="add-shopping-cart" />}
-            /> */}
+              <IconButton
+                bg="white"
+                borderRadius="full"
+                onPress={() => dispatch(cycle(item))}
+                icon={<ShoppingBag width={20} height={20} color="#000" />}
+              />
 
-              <Button onPress={() => dispatch(cycle(item))}>Add</Button>
+              {/* <Button onPress={() => dispatch(cycle(item))}>Add</Button> */}
             </HStack>
           </VStack>
         </TouchableOpacity>
       );
     },
-    [dispatch, navigator, selectedCategory],
+    [categories.data, dispatch, navigator, selectedCategory],
   );
 
   useLayoutEffect(() => {
