@@ -1,17 +1,18 @@
 import {useHeaderHeight} from '@react-navigation/elements';
-import {useRoute} from '@react-navigation/native';
+import {useNavigation, useRoute} from '@react-navigation/native';
 import {
   Box,
   Button,
   Center,
   HStack,
+  IconButton,
   Image,
   Radio,
   ScrollView,
   Text,
   VStack,
 } from 'native-base';
-import React, {useState} from 'react';
+import React, {useLayoutEffect, useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
@@ -19,6 +20,10 @@ import {
   incrementQuantity,
   RootState,
 } from '../ecommerce/cart';
+
+import Heart from './assets/heart.svg';
+import Plus from './assets/plus.small.svg';
+import Minus from './assets/minus.small.svg';
 
 import {Category, Meal as IMeal} from '../ecommerce/types';
 
@@ -44,6 +49,8 @@ export function Meal() {
     | {item: IMeal; category: Category}
     | undefined;
 
+  const navigator = useNavigation();
+
   const headerHeight = useHeaderHeight();
 
   const dispatch = useDispatch();
@@ -51,6 +58,14 @@ export function Meal() {
   const cartItems = useSelector((state: RootState) => state.cart.items);
 
   const [selectedPrice, setSelectedPrice] = useState<number>(12.99);
+
+  useLayoutEffect(() => {
+    navigator.setOptions({
+      headerRight: () => (
+        <IconButton icon={<Heart width={20} height={20} color="#fff" />} />
+      ),
+    });
+  }, [navigator]);
 
   if (!params?.item) {
     return null;
