@@ -15,7 +15,7 @@ const cartSlice = createSlice({
   initialState: {items: []} as State,
   reducers: {
     add: (state, action: PayloadAction<Meal>) => {
-      state.items.push(action.payload);
+      state.items.push({value: action.payload, quantity: 1});
     },
     remove: (state, action: PayloadAction<Meal['idMeal']>) => {
       state.items = state.items.filter(
