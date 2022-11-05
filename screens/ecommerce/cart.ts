@@ -63,9 +63,11 @@ const cartSlice = createSlice({
   },
 });
 
-export const {add, remove, incrementQuantity, decrementQuantity} =
+export const {add, remove, cycle, incrementQuantity, decrementQuantity} =
   cartSlice.actions;
 
 export const store = configureStore({
   reducer: {cart: cartSlice.reducer},
 });
+
+export type RootState = ReturnType<typeof store.getState>;
