@@ -133,7 +133,7 @@ export function Ecommerce() {
         </TouchableOpacity>
       );
     },
-    [dispatch, navigator],
+    [dispatch, navigator, selectedCategory],
   );
 
   useLayoutEffect(() => {
