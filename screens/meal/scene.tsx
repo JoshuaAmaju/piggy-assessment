@@ -22,8 +22,11 @@ import {
 } from '../ecommerce/cart';
 
 import Heart from './assets/heart.svg';
+import Star from './assets/star.svg';
+import Clock from '../../assets/clock.svg';
 import Plus from './assets/plus.small.svg';
 import Minus from './assets/minus.small.svg';
+import ChevronRight from './assets/chevron.right.svg';
 
 import {Category, Meal as IMeal} from '../ecommerce/types';
 
@@ -100,7 +103,7 @@ export function Meal() {
         bg="white"
         mt={-(imageSize / 2)}
         borderTopRadius="3xl">
-        <VStack flex={1} space={6}>
+        <VStack flex={1} space={8} alignItems="center">
           {/* Put a placeholder here to fill in the required space for the image above
             to give accurate result when we offset this container it upwards to five the desired effect */}
           <Box w={imageSize / 2} h={imageSize / 2} />
@@ -111,23 +114,39 @@ export function Meal() {
             </Text>
 
             {category && (
-              <HStack alignItems="center" space={3}>
+              <HStack alignItems="center" space={4}>
                 <Image
                   w={7}
                   h={7}
                   alt={category.strCategoryDescription}
                   source={{uri: category.strCategoryThumb}}
                 />
-                <Text color="gray.400">{category.strCategory}</Text>
+                <Text bold color="gray.500">
+                  {category.strCategory}
+                </Text>
               </HStack>
             )}
 
             <HStack space={4} alignItems="center">
-              <Text>15 min</Text>
+              <HStack space={1} alignItems="center">
+                <Clock width={20} height={20} color="#232322" />
+                <Text color="#232322">15 min</Text>
+              </HStack>
 
               <Box w="1" h="1" bg="gray.300" borderRadius="full" />
 
-              <Text bold>4.8</Text>
+              <HStack space={2} alignItems="center">
+                <Star width={20} height={20} fill="#E9B43E" />
+
+                <HStack space={1} alignItems="center">
+                  <Text bold>
+                    4.8
+                    <Text color="gray.400"> (2.2k review)</Text>
+                  </Text>
+
+                  <ChevronRight width={15} height={15} color="#9A9AA0" />
+                </HStack>
+              </HStack>
             </HStack>
           </VStack>
 
@@ -152,32 +171,15 @@ export function Meal() {
                         selectedPrice === price.value ? '#529F83' : 'gray.200',
                     }}>
                     <VStack mt={4} space={2}>
-                      <Text textAlign="center">{price.label}</Text>
-                      <Text textAlign="center">${price.value}</Text>
+                      <Text textAlign="center" color="gray.500">
+                        {price.label}
+                      </Text>
+                      <Text fontWeight="900" textAlign="center">
+                        ${price.value}
+                      </Text>
                     </VStack>
                   </Radio>
                 );
-
-                // return (
-                //   <VStack
-                //     p={4}
-                //     key={i}
-                //     space={4}
-                //     borderWidth={1}
-                //     borderRadius={20}
-                //     alignItems="center"
-                //     borderColor="gray.200">
-                //     <Radio value={price.value.toString()} />
-
-                //     <VStack space={2}>
-                //       <Text textAlign="center">{price.label}</Text>
-                //       <Text textAlign="center">
-                //         <Text color="#529F83">$</Text>
-                //         {price.value}
-                //       </Text>
-                //     </VStack>
-                //   </VStack>
-                // );
               })}
             </HStack>
           </Radio.Group>
@@ -189,33 +191,33 @@ export function Meal() {
 
         <VStack space={4}>
           <HStack space={2} alignItems="center" justifyContent="space-between">
-            <Text bold>
+            <Text bold fontSize="xl">
               Total: <Text color="#529F83">$</Text>
               {selectedPrice * quantity}
             </Text>
 
-            <HStack space={2} alignItems="center">
-              <Button
-                py={1}
-                px={2.5}
+            <HStack space={4} alignItems="center">
+              <IconButton
+                size="xs"
                 borderRadius="lg"
                 variant="outline"
-                onPress={() => {
-                  dispatch(decrementQuantity(meal.idMeal));
-                }}>
-                -
-              </Button>
-              <Text>{quantity}</Text>
-              <Button
-                py={1}
-                px={2.5}
+                borderColor="#E1E1E1"
+                icon={<Minus width={15} height={15} color="#8B8F98" />}
+                onPress={() => dispatch(decrementQuantity(meal.idMeal))}
+              />
+
+              <Text bold fontSize="lg">
+                {quantity}
+              </Text>
+
+              <IconButton
+                size="xs"
                 borderRadius="lg"
                 variant="outline"
-                onPress={() => {
-                  dispatch(incrementQuantity(meal.idMeal));
-                }}>
-                +
-              </Button>
+                borderColor="#E1E1E1"
+                icon={<Plus width={15} height={15} color="#8B8F98" />}
+                onPress={() => dispatch(incrementQuantity(meal.idMeal))}
+              />
             </HStack>
           </HStack>
 

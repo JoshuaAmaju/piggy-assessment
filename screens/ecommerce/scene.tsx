@@ -265,9 +265,9 @@ export function Ecommerce() {
                     Popular Items
                   </Text>
 
-                  <Link to={{screen: ''}}>
+                  <TouchableOpacity>
                     <Text color="gray.400">See All</Text>
-                  </Link>
+                  </TouchableOpacity>
                 </HStack>
 
                 <FlatList
