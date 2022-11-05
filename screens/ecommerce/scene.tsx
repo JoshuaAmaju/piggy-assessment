@@ -90,7 +90,7 @@ export function Ecommerce() {
           style={styles.meal}
           onPress={() => {
             // @ts-ignore
-            navigator.navigate(meal, {item});
+            navigator.navigate(meal, {item, category: selectedCategory});
           }}>
           <VStack space={6} justifyContent="space-between">
             <VStack space={2} alignItems="center">
