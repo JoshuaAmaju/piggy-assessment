@@ -7,6 +7,8 @@ import {NativeBaseProvider} from 'native-base';
 
 import * as onboarding from './screens/onboarding';
 import * as ecommerce from './screens/ecommerce';
+import * as meal from './screens/meal';
+
 import {store as cart} from './screens/ecommerce/cart';
 
 import {QueryClient, QueryClientProvider} from 'react-query';
@@ -38,6 +40,7 @@ export default function App() {
                       component={ecommerce.Scene}
                       options={{headerBackVisible: false}}
                     />
+                    <Stack.Screen name={meal.name} component={meal.Scene} />
                   </Stack.Navigator>
                 </Provider>
               </QueryClientProvider>
