@@ -17,7 +17,7 @@ import React, {useCallback, useLayoutEffect, useMemo, useState} from 'react';
 
 import {cycle, RootState} from './cart';
 
-import Clock from './assets/clock.svg';
+import Clock from '../../assets/clock.svg';
 import ShoppingBag from './assets/shopping.bag.svg';
 import MagnifyingGlass from './assets/magnifying.glass.svg';
 import AdjustmentsHorizontal from './assets/adjustments.horizontal.svg';
@@ -146,7 +146,7 @@ export function Ecommerce() {
               <VStack space={1}>
                 <Text fontWeight="semibold">🔥 44 calories</Text>
 
-                <HStack space={2} alignItems="center">
+                <HStack space={1} alignItems="center">
                   <Clock width={20} height={20} color="#7E7E7F" />
                   <Text color="#7E7E7F">20 min</Text>
                 </HStack>
