@@ -7,16 +7,16 @@ import {
   HStack,
   Image,
   Radio,
+  ScrollView,
   Text,
-  View,
   VStack,
 } from 'native-base';
 import React, {useState} from 'react';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {
-  incrementQuantity,
   decrementQuantity,
+  incrementQuantity,
   RootState,
 } from '../ecommerce/cart';
 
@@ -63,8 +63,11 @@ export function Meal() {
 
   const quantity = item?.quantity ?? 0;
 
+  // Use a scrollview to make the screen scrollable in landscape orientation
   return (
-    <View flex={1} style={{marginTop: headerHeight / 2}}>
+    <ScrollView
+      showsVerticalScrollIndicator={false}
+      _contentContainerStyle={{minH: 'full', paddingTop: headerHeight / 2}}>
       <Center zIndex={2} position="relative">
         <Image
           w={imageSize}
@@ -88,7 +91,7 @@ export function Meal() {
           <Box w={imageSize / 2} h={imageSize / 2} />
 
           <VStack space={4} alignItems="center">
-            <Text bold fontSize="2xl" textAlign="center">
+            <Text bold fontSize="2xl" textAlign="center" numberOfLines={3}>
               {meal.strMeal}
             </Text>
 
@@ -130,7 +133,8 @@ export function Meal() {
                       borderWidth: 1,
                       borderRadius: 20,
                       flexDirection: 'column',
-                      borderColor: 'gray.200',
+                      borderColor:
+                        selectedPrice === price.value ? '#529F83' : 'gray.200',
                     }}>
                     <VStack mt={4} space={2}>
                       <Text textAlign="center">{price.label}</Text>
@@ -178,6 +182,8 @@ export function Meal() {
             <HStack space={2} alignItems="center">
               <Button
                 py={1}
+                px={2.5}
+                borderRadius="lg"
                 variant="outline"
                 onPress={() => {
                   dispatch(decrementQuantity(meal.idMeal));
@@ -187,6 +193,8 @@ export function Meal() {
               <Text>{quantity}</Text>
               <Button
                 py={1}
+                px={2.5}
+                borderRadius="lg"
                 variant="outline"
                 onPress={() => {
                   dispatch(incrementQuantity(meal.idMeal));
@@ -201,6 +209,6 @@ export function Meal() {
           </Button>
         </VStack>
       </VStack>
-    </View>
+    </ScrollView>
   );
 }
