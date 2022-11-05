@@ -160,7 +160,7 @@ export function Ecommerce() {
   }, [navigator]);
 
   return (
-    <VStack flex={1}>
+    <VStack py="6" flex={1}>
       <VStack flex={1}>
         <VStack space={6}>
           {categories.data ? (
@@ -227,7 +227,7 @@ export function Ecommerce() {
       </VStack>
 
       <HStack
-        m="6"
+        mx="6"
         p={6}
         bg="#529F83"
         borderRadius={20}
