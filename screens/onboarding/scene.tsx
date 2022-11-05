@@ -11,7 +11,7 @@ import {useNavigation} from '@react-navigation/native';
 
 type Slide = {title: string; image: any};
 
-const slide = require('../../assets/slide.png');
+const slide = require('./assets/slide.png');
 
 const slides: Array<Slide> = [
   {
