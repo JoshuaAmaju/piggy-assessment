@@ -22,6 +22,8 @@ import {useDispatch, useSelector} from 'react-redux';
 import {Category, Meal} from './types';
 import {getCategories, getMealsByCategory} from './query';
 
+import {name as meal} from '../meal';
+
 function Spacer() {
   return <Box w={3} />;
 }
@@ -84,7 +86,12 @@ export function Ecommerce() {
   const renderMeal = useCallback<ListRenderItem<Meal>>(
     ({item}) => {
       return (
-        <TouchableOpacity style={styles.meal} onPress={() => {}}>
+        <TouchableOpacity
+          style={styles.meal}
+          onPress={() => {
+            // @ts-ignore
+            navigator.navigate(meal, {item});
+          }}>
           <VStack space={6} justifyContent="space-between">
             <VStack space={2} alignItems="center">
               <Text
@@ -126,7 +133,7 @@ export function Ecommerce() {
         </TouchableOpacity>
       );
     },
-    [dispatch],
+    [dispatch, navigator],
   );
 
   useLayoutEffect(() => {
