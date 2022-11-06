@@ -1,4 +1,11 @@
-import React, {createRef, useCallback, useState} from 'react';
+import React, {
+  createRef,
+  useCallback,
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from 'react';
 import {Box, Button, FlatList, HStack, Image, Text, VStack} from 'native-base';
 import {
   StyleSheet,
@@ -10,6 +17,8 @@ import {
 import {useNavigation} from '@react-navigation/native';
 
 import {name as ecommerce} from '../ecommerce';
+
+import Logo from './assets/logo.svg';
 
 type Slide = {title: string; image: any};
 
@@ -26,6 +35,10 @@ const slides: Array<Slide> = [
     image: require('./assets/slide-three.png'),
     title: "Lock funds you don't want to be tempted to touch",
   },
+  {
+    image: require('./assets/slide-three.png'),
+    title: "Lock funds you don't want to be tempted to touch",
+  },
 ];
 
 export function Onboarding() {
@@ -33,6 +46,9 @@ export function Onboarding() {
   const {width} = useWindowDimensions();
   const slidesRef = createRef<RNFlatList>();
   const [currentSlideIndex, setIndex] = useState(0);
+
+  const interval = useRef<number>();
+  const [userActive, setUserActive] = useState(false);
 
   const renderSlide = useCallback<ListRenderItem<Slide>>(
     ({item}) => {
@@ -56,12 +72,43 @@ export function Onboarding() {
     [width],
   );
 
+  useEffect(() => {
+    if (interval.current) {
+      clearInterval(interval.current);
+    }
+
+    if (userActive) {
+      return;
+    }
+
+    const id = setInterval(() => {
+      setIndex(i => (i >= slides.length - 1 ? 0 : i + 1));
+    }, 2500);
+
+    interval.current = id;
+
+    return () => {
+      clearInterval(id);
+    };
+  }, [userActive]);
+
+  useLayoutEffect(() => {
+    if (!userActive) {
+      slidesRef.current?.scrollToIndex({
+        index: currentSlideIndex,
+        viewPosition: width * currentSlideIndex,
+      });
+    }
+  }, [width, currentSlideIndex, slidesRef, userActive]);
+
   return (
     <VStack space={2} style={styles.scene}>
-      <HStack p={4} justifyContent="center">
-        <Text bold color="blue.500" fontSize="2xl">
+      <HStack p={6} justifyContent="center">
+        {/* <Text bold color="blue.500" fontSize="2xl">
           piggyvest
-        </Text>
+        </Text> */}
+
+        <Logo color="#0B60D8" />
       </HStack>
 
       <VStack space={4} alignItems="center" justifyContent="center">
@@ -73,9 +120,15 @@ export function Onboarding() {
           renderItem={renderSlide}
           keyExtractor={(_, i) => i.toString()}
           showsHorizontalScrollIndicator={false}
+          onTouchEnd={() => setUserActive(false)}
+          onTouchStart={() => setUserActive(true)}
+          getItemLayout={(_, index) => {
+            return {index, length: width, offset: width * index};
+          }}
           onMomentumScrollEnd={({nativeEvent}) => {
             const {contentOffset} = nativeEvent;
             setIndex(contentOffset.x / width);
+            setUserActive(false);
           }}
         />
 
@@ -94,9 +147,9 @@ export function Onboarding() {
         </HStack>
       </VStack>
 
-      <HStack p={4} space={4}>
+      <HStack p={6} space={4}>
         <Button
-          bg="blue.600"
+          bg="#0B60D8"
           style={styles.btn}
           _text={{textTransform: 'uppercase'}}
           onPress={() => navigator.navigate(ecommerce as never)}>
