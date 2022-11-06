@@ -1,4 +1,7 @@
 import {configureStore, createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {persistStore, persistReducer} from 'redux-persist';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import {Meal} from './types';
 
 type Item = {
@@ -66,8 +69,20 @@ const cartSlice = createSlice({
 export const {add, remove, cycle, incrementQuantity, decrementQuantity} =
   cartSlice.actions;
 
+const persistedReducer = persistReducer(
+  {
+    key: 'cart',
+    storage: AsyncStorage,
+  },
+  cartSlice.reducer,
+);
+
 export const store = configureStore({
-  reducer: {cart: cartSlice.reducer},
+  reducer: {cart: persistedReducer},
 });
+
+// let _store = createStore(persistedReducer);
+
+export const persistor = persistStore(store);
 
 export type RootState = ReturnType<typeof store.getState>;
