@@ -18,6 +18,8 @@ import {useNavigation} from '@react-navigation/native';
 
 import {name as ecommerce} from '../ecommerce';
 
+import Logo from './assets/logo.svg';
+
 type Slide = {title: string; image: any};
 
 const slides: Array<Slide> = [
@@ -101,10 +103,12 @@ export function Onboarding() {
 
   return (
     <VStack space={2} style={styles.scene}>
-      <HStack p={4} justifyContent="center">
-        <Text bold color="blue.500" fontSize="2xl">
+      <HStack p={6} justifyContent="center">
+        {/* <Text bold color="blue.500" fontSize="2xl">
           piggyvest
-        </Text>
+        </Text> */}
+
+        <Logo color="#0B60D8" />
       </HStack>
 
       <VStack space={4} alignItems="center" justifyContent="center">
@@ -118,6 +122,9 @@ export function Onboarding() {
           showsHorizontalScrollIndicator={false}
           onTouchEnd={() => setUserActive(false)}
           onTouchStart={() => setUserActive(true)}
+          getItemLayout={(_, index) => {
+            return {index, length: width, offset: width * index};
+          }}
           onMomentumScrollEnd={({nativeEvent}) => {
             const {contentOffset} = nativeEvent;
             setIndex(contentOffset.x / width);
@@ -140,9 +147,9 @@ export function Onboarding() {
         </HStack>
       </VStack>
 
-      <HStack p={4} space={4}>
+      <HStack p={6} space={4}>
         <Button
-          bg="blue.600"
+          bg="#0B60D8"
           style={styles.btn}
           _text={{textTransform: 'uppercase'}}
           onPress={() => navigator.navigate(ecommerce as never)}>
